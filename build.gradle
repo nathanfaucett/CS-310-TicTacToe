@@ -1,8 +1,19 @@
+buildscript {
+    dependencies {
+        classpath files(mkdir('build/classes/main'))
+    }
+}
+plugins {
+  id 'org.roboscratch.robot' version '0.1.1'
+}
+
 apply plugin: 'java'
 apply plugin: 'jacoco'
 
+
 sourceCompatibility = 1.7
 version = '1.0'
+
 jar {
     manifest {
         attributes 'Implementation-Title': 'Tic Tac Toe', 
@@ -27,20 +38,4 @@ jacocoTestReport {
     additionalSourceDirs = files(sourceSets.main.allJava.srcDirs)
 }
 
-test {
-    systemProperties 'property': 'value'
-}
-
-uploadArchives {
-    repositories {
-       flatDir {
-           dirs 'repos'
-       }
-    }
-}
-
-if(hasProperty("Xlint:unchecked")) {
-    tasks.withType(JavaCompile) { 
-        options.compilerArgs << "-Xlint:unchecked" 
-    }
-}
+runrobot.dependsOn build
