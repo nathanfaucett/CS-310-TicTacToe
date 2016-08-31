@@ -1,26 +1,26 @@
 package keywords;
 
 
-import edu.jsu.mcis.*;
+import edu.jsu.mcis.tictactoe.*;
 
 
 public class TicTacToeKeywords {
-	private static TicTacToe _ttt = new TicTacToe();
+	private static Model _m = new Model();
 
 
 	public void startNewGame() {
-		_ttt.startNewGame();
+		_m.reset();
 	}
 
 	public void markLocation(int row, int col) {
-		_ttt.markLocation(row, col);
+		_m.markLocation(row, col);
 	}
 
 	public String getMark(int row, int col) {
-		return _ttt.getMark(row, col);
+		return _m.getMark(row, col);
 	}
 
 	public String getWinner() {
-		return _ttt.getWinner();
+		return _m.getWinner();
 	}
 }

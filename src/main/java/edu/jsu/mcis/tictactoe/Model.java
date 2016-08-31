@@ -1,13 +1,17 @@
-package edu.jsu.mcis;
+package edu.jsu.mcis.tictactoe;
 
 
-public class TicTacToe {
+import java.util.ArrayList;
+
+
+public class Model {
 	private String[][] _board;
 	private int _moves;
 	private String _player;
+	private ArrayList<Listener> _listeners;
 
 
-	public TicTacToe() {
+	public Model() {
 		_board = new String[][] {
 			new String[] {" ", " ", " "},
 			new String[] {" ", " ", " "},
@@ -15,27 +19,18 @@ public class TicTacToe {
 		};
 		_moves = 0;
 		_player = "X";
+		_listeners = new ArrayList<Listener>();
 	}
 
-	private void _reset() {
-		for (int row = 0; row < 3; row++) {
-			for (int col = 0; col < 3; col++) {
-				_board[row][col] = " ";
-			}
-		}
-		_moves = 0;
-		_player = "X";
-	}
-
-	public boolean _validRowCol(int row, int col) {
-		if (row < 0 || row > 3 || col < 0 || col > 3) {
+	private boolean _validRowCol(int row, int col) {
+		if (row < 0 || row > 2 || col < 0 || col > 2) {
 			return false;
 		} else {
 			return true;
 		}
 	}
 
-	public void _switchPlayer() {
+	private void _switchPlayer() {
 		if (_player.equals("X")) {
 			_player = "O";
 		} else {
@@ -43,7 +38,7 @@ public class TicTacToe {
 		}
 	}
 
-	public String _checkSection(int row0, int col0, int row1, int col1, int row2, int col2) {
+	private String _checkSection(int row0, int col0, int row1, int col1, int row2, int col2) {
 		String winner = _board[row0][col0];
 
 		if (!winner.equals(" ") && winner.equals(_board[row1][col1]) && winner.equals(_board[row2][col2])) {
@@ -52,7 +47,7 @@ public class TicTacToe {
 			return null;
 		}
 	}
-	public String _checkVerticall() {
+	private String _checkVerticall() {
 		String winner = null;
 
 		for (int row = 0; row < 3; row++) {
@@ -63,7 +58,7 @@ public class TicTacToe {
 		}
 		return winner;
 	}
-	public String _checkHorizontal() {
+	private String _checkHorizontal() {
 		String winner = null;
 
 		for (int col = 0; col < 3; col++) {
@@ -74,7 +69,7 @@ public class TicTacToe {
 		}
 		return winner;
 	}
-	public String _checkDiagonals() {
+	private String _checkDiagonals() {
 		String winner = _checkSection(0, 0, 1, 1, 2, 2);
 
 		if (winner != null) {
@@ -83,7 +78,7 @@ public class TicTacToe {
 			return _checkSection(0, 2, 1, 1, 2, 0);
 		}
 	}
-	public String _check() {
+	private String _check() {
 		String winner = _checkHorizontal();
 
 		if (winner == null) {
@@ -97,28 +92,45 @@ public class TicTacToe {
 		return winner;
 	}
 
-	public void startNewGame() {
-		_reset();
+	public void reset() {
+		for (int row = 0; row < 3; row++) {
+			for (int col = 0; col < 3; col++) {
+				_board[row][col] = " ";
+			}
+		}
+		_moves = 0;
+		_player = "X";
+		_emitChange();
 	}
 
-	public void markLocation(int row, int col) {
-		if (_moves < 9 && _board[row][col].equals(" ") && _validRowCol(row, col)) {
-			_moves++;
-			_board[row][col] = _player;
-			_check();
-			_switchPlayer();
+	public String getPlayer() {
+		return _player;
+	}
+
+	public void addListener(Listener listener) {
+		_listeners.add(listener);
+	}
+	private void _emitChange() {
+		for (int i = 0, il = _listeners.size(); i < il; i++) {
+			Listener listener = _listeners.get(i);
+			listener.call();
 		}
 	}
 
-	public void checkLocation(int row, int col, String value) {
-		System.out.println(getMark(row, col).equals(value));
-	}
-
-	public void printBoard() {
-		for (int row = 0; row < 3; row++) {
-			System.out.print(" " + _board[row][0]);
-			System.out.print(" " + _board[row][1]);
-			System.out.println(" " + _board[row][2]);
+	public boolean markLocation(int row, int col) {
+		if (_validRowCol(row, col)) {
+			if (_moves < 9 && _board[row][col].equals(" ")) {
+				_moves++;
+				_board[row][col] = _player;
+				_check();
+				_switchPlayer();
+				_emitChange();
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
 		}
 	}
 
@@ -133,14 +145,18 @@ public class TicTacToe {
 	public String getWinner() {
 		String winner = _check();
 
-		if (winner == null && _moves == 9) {
-			return "TIE";
+		if (winner == null) {
+			if (_moves == 9) {
+				return "TIE";
+			} else {
+				return "NONE";
+			}
 		} else {
 			return winner;
 		}
 	}
 
-	public static void main(String[] args) {
-		
+	public boolean isGameOver() {
+		return !getWinner().equals("NONE");
 	}
 }
