@@ -8,7 +8,7 @@ run terminal app
  // Shows gradle debug text on my system
 $ gradle run
  // Just run the JAR
-$ gradle build && java -jar ./build/libs/CS310-TicTacToe-1.0.jar
+$ gradle build && java -jar ./build/libs/CS310-TicTacToe-0.0.1.jar
 ```
 
 create coverage reports
