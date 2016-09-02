@@ -1,5 +1,6 @@
 buildscript {
     dependencies {
+        classpath group: "org.robotframework", name: "swinglibrary", version: "1.9.6"
         classpath files(mkdir("build/classes/main"))
     }
 }
@@ -12,7 +13,7 @@ apply plugin: "application"
 apply plugin: "jacoco"
 
 
-mainClassName = "edu.jsu.mcis.tictactoe.Main"
+mainClassName = "edu.jsu.mcis.tictactoe.Game"
 run {
   standardInput = System.in
 }

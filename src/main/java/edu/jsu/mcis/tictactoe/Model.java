@@ -7,6 +7,7 @@ import java.util.ArrayList;
 public class Model {
 	private String[][] _board;
 	private int _moves;
+	private boolean _gameover;
 	private String _player;
 	private ArrayList<Listener> _listeners;
 
@@ -18,6 +19,7 @@ public class Model {
 			new String[] {" ", " ", " "},
 		};
 		_moves = 0;
+        _gameover = false;
 		_player = "X";
 		_listeners = new ArrayList<Listener>();
 	}
@@ -89,6 +91,10 @@ public class Model {
 			}
 		}
 
+        if (winner != null || _moves == 9) {
+            _gameover = true;
+        }
+
 		return winner;
 	}
 
@@ -99,7 +105,8 @@ public class Model {
 			}
 		}
 		_moves = 0;
-		_player = "X";
+        _gameover = false;
+        _player = "X";
 		_emitChange();
 	}
 
@@ -118,7 +125,7 @@ public class Model {
 	}
 
 	public boolean markLocation(int row, int col) {
-		if (_validRowCol(row, col)) {
+		if (!_gameover && _validRowCol(row, col)) {
 			if (_moves < 9 && _board[row][col].equals(" ")) {
 				_moves++;
 				_board[row][col] = _player;
@@ -157,6 +164,7 @@ public class Model {
 	}
 
 	public boolean isGameOver() {
-		return !getWinner().equals("NONE");
+		_gameover = !getWinner().equals("NONE");
+        return _gameover;
 	}
 }

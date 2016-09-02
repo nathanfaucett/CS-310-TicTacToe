@@ -2,6 +2,7 @@ package keywords;
 
 
 import edu.jsu.mcis.tictactoe.*;
+import java.awt.Component;
 
 
 public class TicTacToeKeywords {
